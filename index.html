@@ -299,6 +299,7 @@ document.getElementById('skiTitle').textContent = SKI.title;
 document.getElementById('skiSub').textContent = SKI.sub + ' Figures under team review; em dashes mark data not yet compiled.';
 const F2 = SKI.headers;
 const fm$ = v => v && !isNaN(+v) ? '$'+(+v).toLocaleString() : (v||'\u2014');
+const fmRange = (lo,hi) => { const a=fm$(lo), b=fm$(hi); return a===b ? a : a+' \u2013 '+b; };
 function slopeClass(v){ if(/ski-in/i.test(v)) return 'ski'; if(/drive/i.test(v)) return 'drive'; return 'walk'; }
 function pcard(p){
   const g = k => p[k]||'';
@@ -311,8 +312,8 @@ function pcard(p){
     <div class="loc">${g('Resort / Destination')}, ${g('State')} &bull; ${g('Brand / Operator')} &bull; Built ${g('Year Built')}${p._yearStar?'**':''}</div>
   </div>
   <div class="pstats">
-    <div class="st"><div class="v">${fm$(g('Typical Resale Price (Low)'))} &ndash; ${fm$(g('Typical Resale Price (High)'))}${p._priceStar?'*':''}</div><div class="k">Typical resale</div></div>
-    <div class="st"><div class="v">${fm$(g('Annual HOA / Dues (Low)'))} &ndash; ${fm$(g('Annual HOA / Dues (High)'))}</div><div class="k">Annual HOA / dues</div></div>
+    <div class="st"><div class="v">${fmRange(g('Typical Resale Price (Low)'),g('Typical Resale Price (High)'))}${p._priceStar?'*':''}</div><div class="k">Typical resale</div></div>
+    <div class="st"><div class="v">${fmRange(g('Annual HOA / Dues (Low)'),g('Annual HOA / Dues (High)'))}</div><div class="k">Annual HOA / dues</div></div>
     <div class="st"><div class="v">${p._shareDisplay||String(g('Shares Per Unit')).split(',').map(x=>'1/'+x.trim()).join(' · ')}</div><div class="k">Share structure</div></div>
     <div class="st"><div class="v">${g('Weeks/Year Guaranteed')}</div><div class="k">Weeks/yr guaranteed</div></div>
     <div class="st"><div class="v">${g('# Units in Club')}</div><div class="k">Units in club</div></div>
