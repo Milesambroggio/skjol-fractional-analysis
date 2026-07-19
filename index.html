@@ -146,12 +146,13 @@ footer{border-top:1px solid var(--line);color:var(--mut);font-size:11px;padding:
 
 <section class="tab" id="explorer">
   <h2>Data Explorer</h2>
-  <p class="lead">Filter and sort all 267 sales (Park City MLS + Colorado repeat-sale comps). Summary statistics update live with your filters. Click a column header to sort.</p>
+  <p class="lead">Filter and sort all 276 sales (Park City MLS + Colorado repeat-sale comps). Summary statistics update live with your filters. Click a column header to sort.</p>
   <div class="filters">
     <div><label>Market</label><select id="fMkt"><option value="">All</option></select></div>
     <div><label>Ownership model</label><select id="fModel"><option value="">All</option></select></div>
     <div><label>Share size</label><select id="fFrac"><option value="">All</option></select></div>
     <div><label>Building</label><select id="fSub"><option value="">All</option></select></div>
+    <div><label>Slope access</label><select id="fSlope"><option value="">All</option></select></div>
     <div><label>Sold year</label><select id="fYear"><option value="">All</option></select></div>
     <div><label>Bedrooms</label><select id="fBd"><option value="">All</option></select></div>
     <button id="fReset">Reset</button>
@@ -235,7 +236,7 @@ const val=(r,h)=> h[1]===-1 ? r[4]/r[5] : h[1]===-2 ? r[4]/r[5]*r[3] : r[h[1]];
 function filtered(){return ROWS.filter(r=>
  (!filters.model||r[2]===filters.model)&&(!filters.frac||r[1]===filters.frac)&&
  (!filters.sub||r[0]===filters.sub)&&(!filters.year||r[8].startsWith(filters.year))&&
- (!filters.bd||String(r[6])===filters.bd)&&(!filters.mkt||r[11]===filters.mkt));}
+ (!filters.bd||String(r[6])===filters.bd)&&(!filters.mkt||r[11]===filters.mkt)&&(!filters.slope||SLOPE[r[0]]===filters.slope));}
 function render(){
  const nv=v=>v==null?-Infinity:v;
  const rows=filtered().sort((a,b)=>{const x=nv(val(a,heads[sortIx])),y=nv(val(b,heads[sortIx]));return (x>y?1:x<y?-1:0)*sortDir;});
@@ -257,6 +258,8 @@ function fill(id,vals,key){const s=document.getElementById(id);vals.forEach(v=>{
 fill('fModel',MODELS,'model');fill('fFrac',FRACS.filter(f=>ROWS.some(r=>r[1]===f)),'frac');
 fill('fSub',[...new Set(ROWS.map(r=>r[0]))].sort(),'sub');fill('fYear',[...new Set(ROWS.map(r=>r[8].slice(0,4)))].sort(),'year');fill('fMkt',[...new Set(ROWS.map(r=>r[11]))],'mkt');
 fill('fBd',[...new Set(ROWS.map(r=>r[6]).filter(v=>v!=null))].sort((a,b)=>a-b).map(String),'bd');
+const SLOPE = {"Timbers Club Aspen": "Ski-In / Ski-Out", "The Little Nell Aspen": "Ski-In / Ski-Out", "One Steamboat Place (Timbers)": "Ski-In / Ski-Out", "Gravity Haus Vail": "Village \u2014 Short Walk", "Victory Ranch": "Drive to Slopes", "Park Hyatt Beaver Creek": "Ski-In / Ski-Out", "Grand Summit Hotel": "Ski-In / Ski-Out", "Deer Valley Club": "Ski-In / Ski-Out", "The Residences At the Chateaux": "Walk to Slopes", "Tuhaye": "Drive to Slopes", "Sky Lodge": "Walk to Slopes", "Red Stag Lodge": "Walk to Slopes", "Aerie Area": "Drive to Slopes", "Old Town Area": "Walk to Slopes", "SkyRidge": "Drive to Slopes", "The Ridge At Canyons Village": "Ski-In / Ski-Out", "Four Seasons Vail": "Walk to Slopes", "Ritz-Carlton Vail": "Walk to Slopes", "Solaris Vail": "Walk to Slopes", "Pacaso 1592 Golf Terrace": "Drive to Slopes"};
+fill('fSlope',[...new Set(ROWS.map(r=>SLOPE[r[0]]).filter(Boolean))].sort(),'slope');
 document.getElementById('fReset').addEventListener('click',()=>{filters={};document.querySelectorAll('.filters select').forEach(s=>s.value='');render();});
 render();
 
